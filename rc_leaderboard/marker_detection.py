@@ -1,3 +1,4 @@
+import numpy as np
 import cv2
 import cv2.aruco as ar
 from .framework import Singleton
@@ -26,6 +27,10 @@ class MarkerDetector(metaclass=Singleton):
         self.dictionary = ar.getPredefinedDictionary(marker_dict)
 
     def __call__(self, stream):
-        img = cv2.imdecode(stream)
+        print(type(stream))
+        print(stream)
+        stream.seek(0)
+        file_bytes = np.asarray(bytearray(stream.read()), dtype=np.uint8)
+        img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
         corners, ids, rejectedImgPoints = ar.detectMarkers(img, self.dictionary)
         return ids

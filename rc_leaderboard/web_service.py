@@ -280,9 +280,8 @@ def setup_api():
         def post(self):
             args = image_upload_parser.parse_args()
             uploaded_file = args['file']
-            fs = FileStorage()
             stream = BytesIO()
-            fs.save(stream)
+            uploaded_file.save(stream)
             ids = MarkerDetector()(stream)
             return {'ids': list(ids)}
 
