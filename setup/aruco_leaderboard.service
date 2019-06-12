@@ -5,7 +5,8 @@ Conflicts=getty@tty1.service
 
 [Service]
 Type=simple
-ExecStart=/python3 /home/pi/aruco_leaderboard/launcher.py
+WorkingDirectory=/home/pi/aruco_leaderboard
+ExecStart=/usr/bin/python3 /home/pi/aruco_leaderboard/launcher.py
 StandardInput=tty-force
 
 [Install]
