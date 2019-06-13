@@ -1,5 +1,5 @@
 # Aruco  RC-Leaderboard
-
+[TOC]
 ## Database schema
 
 
@@ -45,7 +45,7 @@ Lap "1" -right-> "*" Result: belongs to
 @enduml
 ```
 
-## Installation instructions
+## Setup instructions
 - download the latest version of [rasbian](https://downloads.raspberrypi.org/raspbian_lite_latest) and flash it to the micro sd card (using a tool like [etcher](https://www.balena.io/etcher/)).
 - inside the boot partition of the sdcard (the one available on windows) do the following:
     - create a empty text file called ```ssh```
@@ -77,40 +77,23 @@ Lap "1" -right-> "*" Result: belongs to
 
 
 ## Label generator
-- **Font:** FONT_HERSHEY_DUPLEX
-- **Output mockup**
-    - **#**: ar marker
-    - **%**: background image
-    - **&**: starting number
-
-```plain
-    +------------------------------------+
-    | # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% # |
-    +------------------------------------+
-    |   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   |
-    |   %%%&&&&&&&&&&&&&&&&&&&&&&&&%%%   |
-    |   %%%&&&&&&&&&&&&&&&&&&&&&&&&%%%   |
-    |   %%%&&&&&&&&&&&&&&&&&&&&&&&&%%%   |
-    |   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   |
-    +------------------------------------+
-    | # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% # |
-    +------------------------------------+
-```
-
-- **Parameters**
-    - **aruco_code_1** = integer[0-999]
-    - **aruco_code_2** = integer[0-999]
-    - **aruco_code_3** = integer[0-999]
-    - **aruco_code_4** = integer[0-999]
-    - **starting_number** = integer[0-999]
-    - **background_image** = image_path
-    - **top_bar_color** = color (html color code)
-    - **bottom_bar_color** = color (html color code)
+### Parameters
+- **aruco_code_1** = integer[0-999]
+- **aruco_code_2** = integer[0-999]
+- **aruco_code_3** = integer[0-999]
+- **aruco_code_4** = integer[0-999]
+- **starting_number** = integer[0-999]
+- **background_image** = image_path
+    - if the image has a alpha(transparency) channel, it will be stretched to fill the whole image
+    - if there is no transparency, the image will fill the space between top and bottom color bar
+- **top_bar_color** = color (html color code or limited primary color name)
+- **bottom_bar_color** = color (html color code)
 ### Installation:
-#### Installation:
 - install python and opencv as described on [hellsurfer.ch](http://www.hellsurfer.ch)
-- install git and clone this repository or download the zip archive from github
-### usage:
+- to get the code, there are two ways:
+    1. install git and clone this repository
+    2. download the zip archive from github
+### Usage:
 - open a command prompt inside the label_generator directory
 - run ```python label_generator.py id1 id2 id3 id4 starting_number image_path top_color bottom_color output_path```
     - example ```python label_generator.py 1 23 45 678 678 ./testimage.png #1256f3 #1256f3 ./test_output.png```

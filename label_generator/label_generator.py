@@ -17,6 +17,12 @@ marker_border_size = 10
 def get_marker_for(id:int, size_in_pixels:int=256):
     return marker_dictionary.drawMarker(id, size_in_pixels)
 
+def lerp_color(c1,c2,a):
+    a = a/255
+    c1 = (c1 * (1-a)).astype(np.int8)
+    c2 = (c2 * a).astype(np.int8)
+    return c1+c2
+
 def parse_color(code):
     if code.startswith("#"):
         pattern = "0x{}"
@@ -39,6 +45,25 @@ def parse_color(code):
         color = colors.get(code.lower())
         return color
 
+def draw_background(img, image_path):
+    bg = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
+    if bg.shape[2] == 4:
+        bg = cv2.transpose(cv2.resize(bg, tuple(np.array(img.shape[:2][::-1]))), (1,0,2))
+        for y, row in enumerate(bg):
+            for x, color in enumerate(row):
+                img[x,y] = lerp_color(img[x,y], color[:3], color[3])
+
+    elif bg.shape[2] == 3:
+        bg = np.transpose(cv2.resize(bg, tuple(np.array(img.shape[:2]) - np.array([top_bar_height + bottom_bar_height, 0]))), (1,0,2))
+        img[top_bar_height:image_height-bottom_bar_height,:, :] = bg
+    elif bg.shape[2] == 1:
+        bg = np.transpose(cv2.resize(bg, tuple(np.array(img.shape[:2]) - np.array([top_bar_height + bottom_bar_height, 0]))), (1,0,2))
+        img[top_bar_height:image_height-bottom_bar_height,:, 0] = bg
+        img[top_bar_height:image_height-bottom_bar_height,:, 1] = bg
+        img[top_bar_height:image_height-bottom_bar_height,:, 2] = bg
+    else:
+        pass
+    return img
 def draw_bars(img, top_color, bottom_color):
     img = cv2.rectangle(img, (0,0), (image_width, top_bar_height), top_color, -1)
     img = cv2.rectangle(img, (0, image_height-1-bottom_bar_height), (image_width-1, image_height-1), bottom_color, -1)
@@ -98,6 +123,7 @@ def draw_text(img, number:int, scale:int=400, offset_x:int=325, offset_y:int=10)
 def main(*args):
     expected_types = [int, int, int, int, int, str, str, str, str]
     if len(args) != len(expected_types):
+        print("wrong number of arguments: given ", len(args), ", expected ", len(expected_types))
         print("usage: python label_generator.py id1 id2 id3 id4 starting_number image_path top_color bottom_color output_path")
         print("example: python label_generator.py 1 23 45 678 678 ./testimage.png #1256f3 #1256f3 ./test_output.png")
         exit(1)
@@ -109,6 +135,7 @@ def main(*args):
 
     img = np.ones((512, 1024, 3), np.uint8)*255
     img = draw_bars(img, top_color, bottom_color)
+    img = draw_background(img, image_path)
     img = draw_markers(img, id1, id2, id3, id4)
     img = draw_text(img, starting_number, 600, 180, -120)
 
