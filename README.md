@@ -104,8 +104,8 @@ Lap "1" -right-> "*" Result: belongs to
     - **aruco_code_4** = integer[0-999]
     - **starting_number** = integer[0-999]
     - **background_image** = image_path
-    - **top_bar_color** = color (r,g,b)
-    - **bottom_bar_color** = color (r,g,b)
+    - **top_bar_color** = color (html color code)
+    - **bottom_bar_color** = color (html color code)
 ### Installation:
 #### Installation:
 - install python from [Anaconda](https://repo.anaconda.com/archive/Anaconda3-2019.03-Windows-x86_64.exe)
@@ -114,4 +114,4 @@ Lap "1" -right-> "*" Result: belongs to
 ### usage:
 - ~~download label_generator.py~~
 - run ```python label_generator.py id1 id2 id3 id4 starting_number image_path top_color bottom_color```
-  - example ```python label_generator.py 1 23 45 678 678 ./testimage.png (255,0,0) (255,0,0)```
+  - example ```python label_generator.py 1 23 45 678 678 ./testimage.png #1256f3 #1256f3```

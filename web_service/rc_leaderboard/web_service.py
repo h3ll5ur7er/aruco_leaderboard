@@ -283,6 +283,7 @@ def setup_api():
             stream = BytesIO()
             uploaded_file.save(stream)
             ids = MarkerDetector()(stream)
+            
             return {'ids': list(ids)}
 
     @api.route("/export/excel")
