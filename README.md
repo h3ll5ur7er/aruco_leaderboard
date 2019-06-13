@@ -108,10 +108,9 @@ Lap "1" -right-> "*" Result: belongs to
     - **bottom_bar_color** = color (html color code)
 ### Installation:
 #### Installation:
-- install python from [Anaconda](https://repo.anaconda.com/archive/Anaconda3-2019.03-Windows-x86_64.exe)
-- ~~download opencv package~~
-- ~~install opencv package~~
+- install python and opencv as described on [hellsurfer.ch](http://www.hellsurfer.ch)
+- install git and clone this repository or download the zip archive from github
 ### usage:
-- ~~download label_generator.py~~
-- run ```python label_generator.py id1 id2 id3 id4 starting_number image_path top_color bottom_color```
-  - example ```python label_generator.py 1 23 45 678 678 ./testimage.png #1256f3 #1256f3```
+- open a command prompt inside the label_generator directory
+- run ```python label_generator.py id1 id2 id3 id4 starting_number image_path top_color bottom_color output_path```
+    - example ```python label_generator.py 1 23 45 678 678 ./testimage.png #1256f3 #1256f3 ./test_output.png```

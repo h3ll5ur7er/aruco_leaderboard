@@ -96,8 +96,12 @@ def draw_text(img, number:int, scale:int=400, offset_x:int=325, offset_y:int=10)
     return img
 
 def main(*args):
-    expected_types = [int, int, int, int, int, str, str, str]
-    id1, id2, id3, id4, starting_number, image_path, top_color, bottom_color = [t(v) for t, v in zip(expected_types, args)]
+    expected_types = [int, int, int, int, int, str, str, str, str]
+    if len(args) != len(expected_types):
+        print("usage: python label_generator.py id1 id2 id3 id4 starting_number image_path top_color bottom_color output_path")
+        print("example: python label_generator.py 1 23 45 678 678 ./testimage.png #1256f3 #1256f3 ./test_output.png")
+        exit(1)
+    id1, id2, id3, id4, starting_number, image_path, top_color, bottom_color, output_path = [t(v) for t, v in zip(expected_types, args)]
     top_color = parse_color(top_color)
     bottom_color = parse_color(bottom_color)
 
@@ -108,7 +112,7 @@ def main(*args):
     img = draw_markers(img, id1, id2, id3, id4)
     img = draw_text(img, starting_number, 600, 180, -120)
 
-    cv2.imwrite("test_output.png", img)
+    cv2.imwrite(output_path, img)
 
 if __name__ == "__main__":
     from sys import argv
