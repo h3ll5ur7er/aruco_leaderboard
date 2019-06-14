@@ -26,14 +26,23 @@ def setup_api():
     teams_model = api.model("Teams", {"teams":List(Nested(team_model))})
     driver_model = api.model("Driver", {
         "id": Integer,
-        "name": String,
-        "team_id": Integer
+        "name": String
     })
     drivers_model = api.model("Drivers", {"drivers":List(Nested(driver_model))})
+    category_model = api.model("Category", {
+        "id": Integer,
+        "name": String
+    })
+    categories_model = api.model("Categories", {"categories":List(Nested(category_model))})
     car_model = api.model("Car", {
         "id": Integer,
-        "marker": Integer,
-        "driver_id": Integer
+        "marker1": Integer,
+        "marker2": Integer,
+        "marker3": Integer,
+        "marker4": Integer,
+        "driver_id": Integer,
+        "team_id": Integer,
+        "category_id": Integer
     })
     cars_model = api.model("Cars", {"cars":List(Nested(car_model))})
     event_model = api.model("Event", {
@@ -116,8 +125,35 @@ def setup_api():
             params = request.json
             current = Database().drivers.get_by_id(id)
             current.name = params["name"]
-            current.team_id = params["team_id"]
             Database().drivers.commit()
+            return current
+
+
+    ### CATEGORY ###
+    @api.route("/category")
+    class AllCategoriesEndpoint(Resource):
+        @api.marshal_with(categories_model)
+        def get(self):
+            return {"drivers":Database().categories.list_all()}
+        @api.expect(category_model, validate=True)
+        @api.marshal_with(category_model)
+        def post(self):
+            params = request.json
+            return Database().categories.add(**params), 200
+    
+    @api.route("/category/<int:id>")
+    class OneCategoryEndpoint(Resource):
+        @api.marshal_with(category_model)
+        def get(self, id):
+            return Database().category.get_by_id(id)
+            
+        @api.expect(category_model, validate=True)
+        @api.marshal_with(category_model)
+        def post(self, id):
+            params = request.json
+            current = Database().categories.get_by_id(id)
+            current.name = params["name"]
+            Database().categories.commit()
             return current
 
 
@@ -286,17 +322,17 @@ def setup_api():
             
             return {'ids': list(ids)}
 
-    @api.route("/export/excel")
-    @api.route("/export/xls")
-    @api.route("/export/xlsx")
-    class ExcelExportEndpoint(Resource):
-        def get(self):
-            pass
+    # @api.route("/export/excel")
+    # @api.route("/export/xls")
+    # @api.route("/export/xlsx")
+    # class ExcelExportEndpoint(Resource):
+    #     def get(self):
+    #         pass
 
-    @api.route("/export/web")
-    class ExcelExportEndpoint(Resource):
-        def get(self):
-            pass
+    # @api.route("/export/web")
+    # class ExcelExportEndpoint(Resource):
+    #     def get(self):
+    #         pass
 
     return app
 

@@ -39,12 +39,8 @@ class MarkerDetector(metaclass=Singleton):
             DICT_ARUCO_ORIGINAL = 16
         """
         self.dictionary = ar.getPredefinedDictionary(marker_dict)
-
-    def __call__(self, stream):
-        stream.seek(0)
-        file_bytes = np.asarray(bytearray(stream.read()), dtype=np.uint8)
-        img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
-        corners, ids, rejectedImgPoints = ar.detectMarkers(img, self.dictionary)
+        
+    def normalize_markers(self, ids, corners):
         markers = []
         
         if ids is not None:
@@ -54,18 +50,20 @@ class MarkerDetector(metaclass=Singleton):
             down = c[3] - c[0]
 
             mat = np.array([[left, down]])
-            inv_mat = inv(mat)
+            transform = inv(mat)
 
         ids = ids if ids is not None else []
-        positions = []
+        
         for idx, _id in enumerate(ids):
-            markers.append(Marker(_id[0], corners[idx][0], inv_mat))
-            positions.append(markers[-1].position)
+            markers.append(Marker(_id[0], corners[idx][0], transform))
+        return markers
+
+    def order_markers(self, markers):
         min_x = 1000000000
         max_x = -1000000000
         min_y = 1000000000
         max_y = -1000000000
-        for pos in positions:
+        for pos in map(lambda m: m.position, markers):
             y, x = pos[0]
             min_x = min([min_x, x])
             max_x = max([max_x, x])
@@ -73,7 +71,7 @@ class MarkerDetector(metaclass=Singleton):
             max_y = max([max_y, y])
         pivot_x = (max_x + min_x)/2
         pivot_y = (max_y + min_y)/2
-        ordered_marker_ids = [None,]*len(markers)
+        ordered_markers = [None,]*len(markers)
         for m in markers:
             y, x = m.position[0]
             # print("m:", m.value)
@@ -84,17 +82,34 @@ class MarkerDetector(metaclass=Singleton):
                 
                 if x<pivot_x:
                     # v_pos = "upper"
-                    ordered_marker_ids[0] = m.value
+                    ordered_markers[0] = m
                 else:
                     # v_pos = "lower"
-                    ordered_marker_ids[3] = m.value
+                    ordered_markers[3] = m
             else:
                 # h_pos = "right"
                 
                 if x<pivot_x:
                     # v_pos = "upper"
-                    ordered_marker_ids[1] = m.value
+                    ordered_markers[1] = m
                 else:
                     # v_pos = "lower"
-                    ordered_marker_ids[2] = m.value
+                    ordered_markers[2] = m
+        return order_markers
+
+    def image_from_stream(self, stream):
+        stream.seek(0)
+        file_bytes = np.asarray(bytearray(stream.read()), dtype=np.uint8)
+        return cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+
+    def detect_ordered_markers(self, img):
+        corners, ids, rejectedImgPoints = ar.detectMarkers(img, self.dictionary)
+        markers = self.normalize_markers(ids, corners)
+        ordered_markers = self.order_markers(markers)
+        return order_markers
+
+    def __call__(self, stream):
+        img = self.image_from_stream(stream)
+        ordered_markers = self.detect_ordered_markers(img)
+        ordered_marker_ids = list(map(lambda m:m.value, order_markers))
         return ordered_marker_ids

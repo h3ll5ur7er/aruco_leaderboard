@@ -2,7 +2,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import create_session, joinedload
 from .framework import Singleton, Repository
-from .data_model import Model, Car, Driver, Team, Event, Race, Lap, Result
+from .data_model import Model, Car, Driver, Team, Event, Race, Lap, Category, Result
 
 class Db(metaclass=Singleton):
     def __init__(self):
@@ -69,14 +69,19 @@ class LapRepository(GenericRepository):
     def __init__(self):
         super().__init__(Lap)
 
+class CategoryRepository(GenericRepository):
+    def __init__(self):
+        super().__init__(Category)
 
 class ResultRepository(GenericRepository):
     def __init__(self):
         super().__init__(Result)
 
 
+
 class Database(metaclass=Singleton):
     def __init__(self):
+        self.categories = CategoryRepository()
         self.cars = CarRepository()
         self.drivers = DriverRepository()
         self.teams = TeamRepository()

@@ -1,5 +1,6 @@
-""" Singleton metaclass"""
+
 from abc import ABCMeta, abstractmethod
+from logging import getLogger
 
 class Singleton(type):
     _instances_ = {}
@@ -30,3 +31,6 @@ class Repository(metaclass=ABCMeta):
     def list_all(self):
         raise NotImplementedError
 
+class HasLogger(object):
+    def __init__(self, *a,**kw):
+        self._log = getLogger(self.__class__.__name__)

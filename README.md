@@ -97,3 +97,9 @@ Lap "1" -right-> "*" Result: belongs to
 - open a command prompt inside the label_generator directory
 - run ```python label_generator.py id1 id2 id3 id4 starting_number image_path top_color bottom_color output_path```
     - example ```python label_generator.py 1 23 45 678 678 ./testimage.png #1256f3 #1256f3 ./test_output.png```
+## Components
+| description | link                                                                   | price[CHF] |
+| ----------- | ---------------------------------------------------------------------- | ---------- |
+| pi          | https://www.pi-shop.ch/raspberry-pi-kamera-module-v2                   | 32.90      |
+| camera      | https://www.pi-shop.ch/raspberry-pi-3-model-b                          | 39.--      |
+| sdcard      | https://www.pi-shop.ch/kingston-microsdhc-card-16gb-class-10-multi-kit | 10.90      |
