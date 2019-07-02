@@ -7,7 +7,7 @@ from .data_model import Model, Car, Driver, Team, Event, Race, Lap, Category, Re
 class Db(metaclass=Singleton):
     def __init__(self):
         self._db_name = "leaderboard.db"
-        self.engine   = create_engine(f"sqlite:///{self._db_name}")
+        self.engine   = create_engine("sqlite:///{}".format(self._db_name))
         self.session  = create_session(self.engine)
         from os.path import exists
         if not exists(self._db_name):
