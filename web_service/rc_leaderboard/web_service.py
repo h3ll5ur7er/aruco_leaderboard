@@ -307,7 +307,7 @@ def setup_api():
     class MarkerGeneratorEndpoint(Resource):
         def get(self, marker_id):
             marker_data = MarkerRegistry().get_marker_for(marker_id)
-            return send_file(BytesIO(marker_data), attachment_filename=f"marker{marker_id:03d}.png")
+            return send_file(BytesIO(marker_data), attachment_filename="marker{}.png".format(marker_id))
 
     @api.route("/detect/marker")
     class MarkerDetectorEndpoint(Resource):
